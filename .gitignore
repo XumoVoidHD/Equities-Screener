@@ -1,0 +1,45 @@
+# Environment and secrets
+.env
+.env*.local
+
+# Dynamic token cache with active JWT tokens
+data/dhan/token.json
+
+# Python caches and virtual environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Testing & Linters
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDEs & System files
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
