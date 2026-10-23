@@ -121,3 +121,44 @@ python test_equities_stream.py all 15
 python test_full_universe_stream.py 15
 ```
 
+---
+
+### 5. NautilusTrader Real-Time Equity Screener Actor
+
+A production-grade `Actor` inheriting from `nautilus_trader.common.actor.Actor` that monitors all subscribed stocks in real-time and evaluates screening criteria (volume surge, price momentum, range expansion, and Donchian breakouts):
+
+```python
+from broker import DhanBroker, NautilusEquityScreenerActor, ScreenerConfig
+
+# 1. Configure detection criteria
+config = ScreenerConfig(
+    lookback_bars=10,
+    min_volume_ratio=2.0,      # Volume surge >= 2x average volume
+    min_price_change_pct=1.0,  # Price momentum >= 1.0%
+    check_breakout=True,       # Detect new N-period highs/lows
+)
+
+# 2. Instantiate Nautilus Actor
+screener = NautilusEquityScreenerActor(config=config)
+
+def on_match(match):
+    print(f"ALERT: {match.symbol} Rs.{match.price:.2f} [{', '.join(match.reasons)}]")
+
+screener.on_match(on_match)
+
+# 3. Attach directly to DhanBroker live feed
+broker = DhanBroker(bar_timeframes=["1m"])
+screener.attach_to_broker(broker)
+
+# 4. Subscribe to any equity universe (or all 2,884 pure equities)
+broker.subscribe_bars(["RELIANCE", "TCS", "INFY", "TATAMOTORS"], timeframe="1m")
+broker.connect()
+```
+
+#### Run the Nautilus Screener Test
+```bash
+# Synthetic bar verification + live bridge test
+python test_nautilus_screener.py live 10
+```
+
+
