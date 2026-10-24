@@ -163,11 +163,11 @@ st.markdown(
 
 
 @st.cache_data(show_spinner=False)
-def load_research_dataset() -> list[dict]:
-    """Load cached historical market data for 116 real Indian stocks."""
+def load_research_dataset(cache_mtime: float = 0.0) -> list[dict]:
+    """Load cached historical market data for Indian stocks."""
     cache_path = Path("data/dhan/research_sample_daily.json")
     if not cache_path.exists():
-        st.error(f"Dataset missing at {cache_path}. Run explore_screener_configs.py first.")
+        st.error(f"Dataset missing at {cache_path}. Run scripts/cache_universe_daily.py first.")
         return []
 
     with open(cache_path, "r", encoding="utf-8") as f:
@@ -181,7 +181,7 @@ def load_research_dataset() -> list[dict]:
         highs = candles.get("high", [])
         lows = candles.get("low", [])
 
-        if len(closes) < 20:
+        if len(closes) < 15:
             continue
 
         hourly_px = closes[-1]
@@ -334,6 +334,42 @@ with st.sidebar:
     )
 
     st.markdown("---")
+
+    # 3. Stock Universe Scope
+    st.markdown("#### 🌐 Stock Universe Scope")
+    cache_path = Path("data/dhan/research_sample_daily.json")
+    cache_mtime = cache_path.stat().st_mtime if cache_path.exists() else 0.0
+    full_dataset = load_research_dataset(cache_mtime)
+    total_avail = len(full_dataset)
+
+    scope_choice = st.selectbox(
+        "Screening Universe",
+        options=[
+            f"All Active Stocks ({total_avail} Equities)",
+            "Top 100 Liquid Largecaps",
+            "Nifty 50 Bluechips",
+            "Quick Sample (116 Stocks)",
+        ],
+        index=0,
+        help="Choose how many stocks from the active universe to evaluate.",
+    )
+
+    if "All Active" in scope_choice:
+        dataset = full_dataset
+    elif "Top 100" in scope_choice:
+        dataset = full_dataset[:100]
+    elif "Nifty 50" in scope_choice:
+        dataset = full_dataset[:50]
+    elif "Quick Sample" in scope_choice:
+        dataset = full_dataset[:116]
+    else:
+        dataset = full_dataset
+
+    if st.button("🔄 Reload Data Cache", use_container_width=True):
+        st.cache_data.clear()
+        st.rerun()
+
+    st.markdown("---")
     st.markdown("#### ⚙️ Configurable Conditions")
 
     # Condition 1
@@ -462,7 +498,6 @@ active_config = ScreenerConditionsConfig(
 # Run Screener Pipeline
 # -----------------------------------------------------------------------------
 
-dataset = load_research_dataset()
 results = []
 cond_pass_counts = {"condition_1": 0, "condition_2": 0, "condition_3": 0, "condition_4": 0, "condition_5": 0}
 
@@ -511,7 +546,7 @@ pass_rate = (len(matched_list) / len(results)) * 100.0 if results else 0.0
 title_col, btn_col = st.columns([4, 1])
 with title_col:
     st.markdown("## ⚡ <span class='brand-glow'>DhanHQ</span> Equity Screener Pro", unsafe_allow_html=True)
-    st.caption(f"Real-Time Multi-Timeframe Technical Screener • Evaluating **{len(dataset)}** NSE Equities • Logic: `{logic_choice}`")
+    st.caption(f"Real-Time Multi-Timeframe Technical Screener • Evaluating **{len(dataset)}** Stocks (Universe: **{total_avail}** cached / **2,736** NSE equities) • Logic: `{logic_choice}`")
 
 with btn_col:
     if st.button("🔄 Re-Run Screener", type="primary", use_container_width=True):
