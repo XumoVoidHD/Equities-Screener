@@ -42,7 +42,6 @@ from broker.conditions import (
 
 st.set_page_config(
     page_title="Dhan Equity Screener Pro",
-    page_icon="⚡",
     layout="wide",
     initial_sidebar_state="expanded",
 )
@@ -221,7 +220,7 @@ def load_research_dataset(cache_mtime: float = 0.0) -> list[dict]:
 # -----------------------------------------------------------------------------
 
 PRESETS = {
-    "🌟 Multi-Condition Wide Net (OR Logic - ~98% yield)": {
+    "Multi-Condition Wide Net (OR Logic - ~98% yield)": {
         "file": "config/preset_wide_net_leaderboard.json",
         "logic": "OR",
         "c1_enabled": True, "c1_op": ">", "c1_factor": 1.0, "c1_offset": 0.0,
@@ -230,7 +229,7 @@ PRESETS = {
         "c4_enabled": True, "c4_op": ">", "c4_window": 14, "c4_lookback": 1, "c4_delta": 1.0,
         "c5_enabled": False, "c5_op": ">", "c5_vol": 5000000.0,
     },
-    "🟢 Active Intraday Green Stocks (C1 + C2 - ~47% yield)": {
+    "Active Intraday Green Stocks (C1 + C2 - ~47% yield)": {
         "file": "config/preset_green_intraday_momentum.json",
         "logic": "AND",
         "c1_enabled": True, "c1_op": ">", "c1_factor": 1.0, "c1_offset": 0.0,
@@ -239,7 +238,7 @@ PRESETS = {
         "c4_enabled": False, "c4_op": ">", "c4_window": 14, "c4_lookback": 1, "c4_delta": 10.0,
         "c5_enabled": False, "c5_op": ">", "c5_vol": 5000000.0,
     },
-    "📈 Green Day + RSI Rising (+1 pt jump - ~33% yield)": {
+    "Green Day + RSI Rising (+1 pt jump - ~33% yield)": {
         "file": "config/preset_intraday_rsi_rising.json",
         "logic": "AND",
         "c1_enabled": True, "c1_op": ">", "c1_factor": 1.0, "c1_offset": 0.0,
@@ -248,7 +247,7 @@ PRESETS = {
         "c4_enabled": True, "c4_op": ">", "c4_window": 14, "c4_lookback": 1, "c4_delta": 1.0,
         "c5_enabled": False, "c5_op": ">", "c5_vol": 5000000.0,
     },
-    "🏆 10-Day Relative Strength Leaders (C2 + C3 - ~15.5% yield)": {
+    "10-Day Relative Strength Leaders (C2 + C3 - ~15.5% yield)": {
         "file": "config/preset_swing_relative_strength.json",
         "logic": "AND",
         "c1_enabled": False, "c1_op": ">", "c1_factor": 1.0, "c1_offset": 0.0,
@@ -257,7 +256,7 @@ PRESETS = {
         "c4_enabled": False, "c4_op": ">", "c4_window": 14, "c4_lookback": 1, "c4_delta": 10.0,
         "c5_enabled": False, "c5_op": ">", "c5_vol": 5000000.0,
     },
-    "🎯 Consolidation Breakout with Dip Tolerance (~12% yield)": {
+    "Consolidation Breakout with Dip Tolerance (~12% yield)": {
         "file": "config/preset_breakout_dip_tolerance.json",
         "logic": "AND",
         "c1_enabled": True, "c1_op": ">", "c1_factor": 0.995, "c1_offset": 0.0,
@@ -266,7 +265,7 @@ PRESETS = {
         "c4_enabled": True, "c4_op": ">=", "c4_window": 14, "c4_lookback": 1, "c4_delta": 0.0,
         "c5_enabled": False, "c5_op": ">", "c5_vol": 5000000.0,
     },
-    "🎯 Original Chartink Baseline (Strict RSI +10.0 - ~0.9% yield)": {
+    "Original Chartink Baseline (Strict RSI +10.0 - ~0.9% yield)": {
         "file": "config/screener_conditions.json",
         "logic": "AND",
         "c1_enabled": True, "c1_op": ">", "c1_factor": 1.0, "c1_offset": 0.0,
@@ -281,7 +280,7 @@ PRESETS = {
 # Initialize Session State
 # -----------------------------------------------------------------------------
 
-default_preset_name = "📈 Green Day + RSI Rising (+1 pt jump - ~33% yield)"
+default_preset_name = "Green Day + RSI Rising (+1 pt jump - ~33% yield)"
 
 if "selected_preset" not in st.session_state:
     st.session_state["selected_preset"] = default_preset_name
@@ -307,11 +306,11 @@ def apply_preset(name: str):
 # -----------------------------------------------------------------------------
 
 with st.sidebar:
-    st.markdown("### ⚡ Screener Engine")
+    st.markdown("### Screener Engine")
     st.caption("Customize condition parameters and re-run on real Indian stock data.")
 
     # 1. Preset Selector
-    st.markdown("#### 📁 Quick Presets")
+    st.markdown("#### Quick Presets")
     chosen_preset = st.selectbox(
         "Load Configuration Preset",
         options=list(PRESETS.keys()),
@@ -323,7 +322,7 @@ with st.sidebar:
     st.markdown("---")
 
     # 2. Global Combination Logic
-    st.markdown("#### 🔀 Evaluation Logic")
+    st.markdown("#### Evaluation Logic")
     logic_choice = st.radio(
         "Condition Connector",
         options=["AND", "OR"],
@@ -336,7 +335,7 @@ with st.sidebar:
     st.markdown("---")
 
     # 3. Stock Universe Scope
-    st.markdown("#### 🌐 Stock Universe Scope")
+    st.markdown("#### Stock Universe Scope")
     cache_path = Path("data/dhan/research_sample_daily.json")
     cache_mtime = cache_path.stat().st_mtime if cache_path.exists() else 0.0
     full_dataset = load_research_dataset(cache_mtime)
@@ -365,12 +364,12 @@ with st.sidebar:
     else:
         dataset = full_dataset
 
-    if st.button("🔄 Reload Data Cache", use_container_width=True):
+    if st.button("Reload Data Cache", use_container_width=True):
         st.cache_data.clear()
         st.rerun()
 
     st.markdown("---")
-    st.markdown("#### ⚙️ Configurable Conditions")
+    st.markdown("#### Configurable Conditions")
 
     # Condition 1
     with st.expander("Condition 1: Hourly Close vs Daily Open", expanded=st.session_state.get("c1_enabled", True)):
@@ -415,7 +414,7 @@ with st.sidebar:
     st.markdown("---")
 
     # Save Configuration Button
-    if st.button("💾 Export Current Config to JSON", use_container_width=True):
+    if st.button("Export Current Config to JSON", use_container_width=True):
         custom_cfg = ScreenerConditionsConfig(
             screener_name=f"Custom: {chosen_preset}",
             logic=logic_choice,
@@ -545,11 +544,11 @@ pass_rate = (len(matched_list) / len(results)) * 100.0 if results else 0.0
 # Header
 title_col, btn_col = st.columns([4, 1])
 with title_col:
-    st.markdown("## ⚡ <span class='brand-glow'>DhanHQ</span> Equity Screener Pro", unsafe_allow_html=True)
+    st.markdown("## <span class='brand-glow'>DhanHQ</span> Equity Screener Pro", unsafe_allow_html=True)
     st.caption(f"Real-Time Multi-Timeframe Technical Screener • Evaluating **{len(dataset)}** Stocks (Universe: **{total_avail}** cached / **2,736** NSE equities) • Logic: `{logic_choice}`")
 
 with btn_col:
-    if st.button("🔄 Re-Run Screener", type="primary", use_container_width=True):
+    if st.button("Re-Run Screener", type="primary", use_container_width=True):
         st.rerun()
 
 st.markdown("---")
@@ -613,7 +612,7 @@ with kpi4:
 st.markdown("<br>", unsafe_allow_html=True)
 
 # 2. Condition Bottleneck Funnel Chart
-st.markdown("### 🔍 Condition Pass Rate Funnel")
+st.markdown("### Condition Pass Rate Funnel")
 st.caption("Identify which conditions are passing most stocks vs acting as strict filters.")
 
 funnel_data = pd.DataFrame([
@@ -669,7 +668,7 @@ st.altair_chart(chart, use_container_width=True)
 st.markdown("---")
 
 # 3. Screener Results Table
-st.markdown("### 📋 Screened Stocks Leaderboard")
+st.markdown("### Screened Stocks Leaderboard")
 
 if matched_list:
     df_display = pd.DataFrame([
@@ -692,12 +691,12 @@ if matched_list:
 
     search_col, filter_col, dl_col = st.columns([2, 1, 1])
     with search_col:
-        search_query = st.text_input("🔍 Search Symbol", placeholder="Filter (e.g. RELIANCE, TCS, INFY)...")
+        search_query = st.text_input("Search Symbol", placeholder="Filter (e.g. RELIANCE, TCS, INFY)...")
     with filter_col:
         sort_by = st.selectbox("Sort By", ["Score", "Day Chg (%)", "Price (Rs.)", "RSI Delta", "Daily Volume"])
     with dl_col:
         csv_data = df_display.to_csv(index=False).encode("utf-8")
-        st.download_button("📥 Export CSV", data=csv_data, file_name="screened_stocks.csv", mime="text/csv", use_container_width=True)
+        st.download_button("Export CSV", data=csv_data, file_name="screened_stocks.csv", mime="text/csv", use_container_width=True)
 
     if search_query:
         df_display = df_display[df_display["Symbol"].str.contains(search_query.strip().upper())]
@@ -709,10 +708,10 @@ if matched_list:
         use_container_width=True,
         hide_index=True,
         column_config={
-            "Price (Rs.)": st.column_config.NumberColumn(format="₹%.2f"),
-            "Daily Open": st.column_config.NumberColumn(format="₹%.2f"),
-            "[-1] Close": st.column_config.NumberColumn(format="₹%.2f"),
-            "[-10] Close": st.column_config.NumberColumn(format="₹%.2f"),
+            "Price (Rs.)": st.column_config.NumberColumn(format="Rs. %.2f"),
+            "Daily Open": st.column_config.NumberColumn(format="Rs. %.2f"),
+            "[-1] Close": st.column_config.NumberColumn(format="Rs. %.2f"),
+            "[-10] Close": st.column_config.NumberColumn(format="Rs. %.2f"),
             "Day Chg (%)": st.column_config.NumberColumn(format="%+.2f%%"),
             "RSI Delta": st.column_config.NumberColumn(format="%+.1f"),
             "Daily Volume": st.column_config.NumberColumn(format="%d"),
@@ -725,12 +724,12 @@ if matched_list:
         },
     )
 else:
-    st.warning("⚠️ No stocks matched with current parameters. Try relaxing Condition 4 (RSI Delta) or switching Logic to 'OR'.")
+    st.warning("No stocks matched with current parameters. Try relaxing Condition 4 (RSI Delta) or switching Logic to 'OR'.")
 
 st.markdown("---")
 
 # 4. Stock Deep Dive Inspector
-st.markdown("### 🔬 Stock Deep Dive Inspector")
+st.markdown("### Stock Deep Dive Inspector")
 st.caption("Select any stock to see full condition-by-condition evaluation details and historical price trajectory.")
 
 inspect_symbols = [m["symbol"] for m in matched_list] or [r["symbol"] for r in results]
