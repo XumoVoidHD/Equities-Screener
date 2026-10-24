@@ -1,0 +1,56 @@
+{
+  "screener_name": "Chartink Intraday Momentum & RSI Surge",
+  "logic": "AND",
+  "conditions": {
+    "condition_1": {
+      "id": "condition_1",
+      "name": "Hourly Close > Daily Open",
+      "enabled": true,
+      "connector": "AND",
+      "operator": ">",
+      "factor": 1.0,
+      "offset": 0.0,
+      "description": "Checks if the latest hourly close is above today's open price"
+    },
+    "condition_2": {
+      "id": "condition_2",
+      "name": "Hourly Close > ([-1] Daily Close * 0.95)",
+      "enabled": true,
+      "connector": "AND",
+      "operator": ">",
+      "lookback_days": 1,
+      "factor": 0.95,
+      "description": "Checks if the hourly close is above 95% of previous day's close (not down > 5%)"
+    },
+    "condition_3": {
+      "id": "condition_3",
+      "name": "Hourly Close >= [-10] Daily Close",
+      "enabled": true,
+      "connector": "AND",
+      "operator": ">=",
+      "lookback_days": 10,
+      "factor": 1.0,
+      "description": "Checks if the hourly close is above or equal to the daily close 10 days ago"
+    },
+    "condition_4": {
+      "id": "condition_4",
+      "name": "1day RSI(14) > ([-1] 1day RSI(14) + 10)",
+      "enabled": true,
+      "connector": "AND",
+      "operator": ">",
+      "rsi_window": 14,
+      "lookback_days": 1,
+      "rsi_delta": 10.0,
+      "description": "Checks if today's daily RSI(14) is more than 10 points higher than yesterday's RSI"
+    },
+    "condition_5": {
+      "id": "condition_5",
+      "name": "Daily Volume > 5,000,000",
+      "enabled": false,
+      "connector": "AND",
+      "operator": ">",
+      "min_volume": 5000000.0,
+      "description": "Checks if today's cumulative daily volume exceeds 5,000,000 shares"
+    }
+  }
+}

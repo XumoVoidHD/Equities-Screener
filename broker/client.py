@@ -505,3 +505,38 @@ class DhanBroker:
             to_date=to_date,
         )
         return res
+
+    def get_historical_daily_bars(
+        self,
+        symbol: str,
+        from_date: str,
+        to_date: str,
+    ) -> dict:
+        """Fetch historical daily bars using DhanHQ REST API.
+
+        Args:
+            symbol: Symbol string (e.g. 'RELIANCE', 'TCS')
+            from_date: Date string 'YYYY-MM-DD'
+            to_date: Date string 'YYYY-MM-DD'
+        """
+        seg_val, sec_id, _ = self.scrip_master.resolve(symbol)
+        ctx = self.auth_manager.get_dhan_context()
+        hist = dhanhq.HistoricalData(ctx)
+
+        seg_name_map = {
+            ExchangeSegment.IDX.value: "IDX_I",
+            ExchangeSegment.NSE.value: "NSE_EQ",
+            ExchangeSegment.NSE_FNO.value: "NSE_FNO",
+            ExchangeSegment.BSE.value: "BSE_EQ",
+            ExchangeSegment.MCX.value: "MCX_COMM",
+        }
+        exch_str = seg_name_map.get(seg_val, "NSE_EQ")
+
+        res = hist.historical_daily_data(
+            security_id=sec_id,
+            exchange_segment=exch_str,
+            instrument_type="INDEX" if seg_val == ExchangeSegment.IDX.value else "EQUITY",
+            from_date=from_date,
+            to_date=to_date,
+        )
+        return res

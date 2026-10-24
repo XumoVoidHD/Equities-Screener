@@ -161,4 +161,60 @@ broker.connect()
 python test_nautilus_screener.py live 10
 ```
 
+---
+
+### 6. Configurable Multi-Condition Screener (Chartink-Style)
+
+The screener includes a fully configurable condition evaluation engine implementing 5 momentum, price breakout, and RSI surge conditions:
+
+| # | Condition Name | Default Expression | Configurable Parameters |
+|---|---|---|---|
+| **1** | **Hourly Close > Daily Open** | `Hourly Close > Daily Open` | `factor` (default `1.0`), `offset` (default `0.0`), `operator` (`>`, `>=`, etc.), `enabled` |
+| **2** | **Hourly Close > Discounted Prev Close** | `Hourly Close > ([-1] Daily Close * 0.95)` | `lookback_days` (default `1`), `factor` (default `0.95`), `operator`, `enabled` |
+| **3** | **Hourly Close >= Past Daily Close** | `Hourly Close >= [-10] Daily Close` | `lookback_days` (default `10`), `factor` (default `1.0`), `operator`, `enabled` |
+| **4** | **Daily RSI Surge** | `1day RSI(14) > ([-1] 1day RSI(14) + 10)` | `rsi_window` (default `14`), `lookback_days` (default `1`), `rsi_delta` (default `10.0`), `enabled` |
+| **5** | **Daily Volume Threshold** | `Daily Volume > 5,000,000` | `min_volume` (default `5,000,000`), `enabled` (*disabled by default*) |
+
+#### A. Configure via JSON (`config/screener_conditions.json`)
+All conditions and their parameters can be customized without editing code:
+```json
+{
+  "screener_name": "Chartink Intraday Momentum & RSI Surge",
+  "logic": "AND",
+  "conditions": {
+    "condition_1": { "enabled": true, "operator": ">", "factor": 1.0, "offset": 0.0 },
+    "condition_2": { "enabled": true, "operator": ">", "lookback_days": 1, "factor": 0.95 },
+    "condition_3": { "enabled": true, "operator": ">=", "lookback_days": 10, "factor": 1.0 },
+    "condition_4": { "enabled": true, "operator": ">", "rsi_window": 14, "lookback_days": 1, "rsi_delta": 10.0 },
+    "condition_5": { "enabled": false, "operator": ">", "min_volume": 5000000.0 }
+  }
+}
+```
+
+#### B. Dynamic Configuration in Python
+```python
+from broker import NautilusEquityScreenerActor, ScreenerConditionsConfig
+
+# 1. Load from JSON or create programmatically
+screener = NautilusEquityScreenerActor(conditions_json_path="config/screener_conditions.json")
+
+# 2. Modify parameters dynamically on the fly
+screener.set_condition_param("condition_2", "factor", 0.92)      # 8% discount tolerance
+screener.set_condition_param("condition_4", "rsi_delta", 8.0)     # Require +8 RSI jump instead of +10
+screener.enable_condition("condition_5", True)                   # Enable volume condition
+screener.set_condition_param("condition_5", "min_volume", 2000000.0)
+
+# 3. Save modified rules
+screener.save_conditions("config/my_custom_conditions.json")
+```
+
+#### C. Run the Condition Verification Tests
+```bash
+# 1. Run unit checks, dynamic reconfiguration, and synthetic bar pipeline tests:
+python test_chartink_screener.py
+
+# 2. Run with real Dhan REST API historical daily data for sample equities:
+python test_chartink_screener.py real
+```
+
 
