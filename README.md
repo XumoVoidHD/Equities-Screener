@@ -215,6 +215,21 @@ python test_chartink_screener.py
 
 # 2. Run with real Dhan REST API historical daily data for sample equities:
 python test_chartink_screener.py real
+
+# 3. Benchmark multiple configurations across the real Indian equity universe:
+python explore_screener_configs.py
 ```
+
+#### D. Ready-to-Use High-Yield Presets
+
+| Preset JSON | Yield (%) | Approx. Stocks | Description |
+|---|---|---|---|
+| [`config/preset_wide_net_leaderboard.json`](file:///c:/Users/vedan/Documents/projects/aryaman_screener/config/preset_wide_net_leaderboard.json) | **98.3%** | **~2,750+** | **Wide Net (`OR` Logic)**: Triggers if *any* bullish signal fires; ranks all stocks on a live leaderboard. |
+| [`config/preset_green_intraday_momentum.json`](file:///c:/Users/vedan/Documents/projects/aryaman_screener/config/preset_green_intraday_momentum.json) | **47.4%** | **~1,300+** | **Intraday Green Stocks**: Stocks trading above today's open (`Hourly > Open`) without crashing (`> -5%`). |
+| [`config/preset_intraday_rsi_rising.json`](file:///c:/Users/vedan/Documents/projects/aryaman_screener/config/preset_intraday_rsi_rising.json) | **32.8%** | **~920+** | **Green + RSI Rising**: Intraday green stocks whose daily RSI is actively gaining momentum (`+1 pt`). |
+| [`config/preset_swing_relative_strength.json`](file:///c:/Users/vedan/Documents/projects/aryaman_screener/config/preset_swing_relative_strength.json) | **15.5%** | **~430+** | **10-Day Relative Strength**: Stocks holding above their 10-day close, outperforming the general market. |
+| [`config/preset_breakout_dip_tolerance.json`](file:///c:/Users/vedan/Documents/projects/aryaman_screener/config/preset_breakout_dip_tolerance.json) | **12.1%** | **~340+** | **Consolidation Breakout**: Stocks within 0.5% of open and 2% of 10-day high with advancing RSI. |
+| [`config/screener_conditions.json`](file:///c:/Users/vedan/Documents/projects/aryaman_screener/config/screener_conditions.json) | **0.9%** | **~25** | **Original Screenshot Baseline**: Strict +10 pt RSI surge + 10-day high + green candle. |
+
 
 

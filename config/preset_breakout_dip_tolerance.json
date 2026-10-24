@@ -1,0 +1,47 @@
+{
+  "screener_name": "Consolidation Breakout with Dip Tolerance",
+  "description": "Yields ~12% of stocks (~340 stocks across Indian universe). Allows stocks consolidating near open and within 2% of 10-day highs whose RSI is advancing.",
+  "logic": "AND",
+  "conditions": {
+    "condition_1": {
+      "id": "condition_1",
+      "name": "Hourly Close > Daily Open * 0.995",
+      "enabled": true,
+      "operator": ">",
+      "factor": 0.995,
+      "offset": 0.0
+    },
+    "condition_2": {
+      "id": "condition_2",
+      "name": "Hourly Close > ([-1] Daily Close * 0.95)",
+      "enabled": true,
+      "operator": ">",
+      "lookback_days": 1,
+      "factor": 0.95
+    },
+    "condition_3": {
+      "id": "condition_3",
+      "name": "Hourly Close >= [-10] Daily Close * 0.98",
+      "enabled": true,
+      "operator": ">=",
+      "lookback_days": 10,
+      "factor": 0.98
+    },
+    "condition_4": {
+      "id": "condition_4",
+      "name": "1day RSI(14) >= ([-1] 1day RSI(14))",
+      "enabled": true,
+      "operator": ">=",
+      "rsi_window": 14,
+      "lookback_days": 1,
+      "rsi_delta": 0.0
+    },
+    "condition_5": {
+      "id": "condition_5",
+      "name": "Daily Volume > 5,000,000",
+      "enabled": false,
+      "operator": ">",
+      "min_volume": 5000000.0
+    }
+  }
+}

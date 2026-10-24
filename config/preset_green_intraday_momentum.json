@@ -1,0 +1,47 @@
+{
+  "screener_name": "Active Intraday Green Stocks (C1 + C2)",
+  "description": "Yields ~47% of stocks (~1,300+ stocks across Indian universe). Catches all stocks currently trading in the green above daily open with volatility protection.",
+  "logic": "AND",
+  "conditions": {
+    "condition_1": {
+      "id": "condition_1",
+      "name": "Hourly Close > Daily Open",
+      "enabled": true,
+      "operator": ">",
+      "factor": 1.0,
+      "offset": 0.0
+    },
+    "condition_2": {
+      "id": "condition_2",
+      "name": "Hourly Close > ([-1] Daily Close * 0.95)",
+      "enabled": true,
+      "operator": ">",
+      "lookback_days": 1,
+      "factor": 0.95
+    },
+    "condition_3": {
+      "id": "condition_3",
+      "name": "Hourly Close >= [-10] Daily Close",
+      "enabled": false,
+      "operator": ">=",
+      "lookback_days": 10,
+      "factor": 1.0
+    },
+    "condition_4": {
+      "id": "condition_4",
+      "name": "1day RSI(14) > ([-1] 1day RSI(14) + 10)",
+      "enabled": false,
+      "operator": ">",
+      "rsi_window": 14,
+      "lookback_days": 1,
+      "rsi_delta": 10.0
+    },
+    "condition_5": {
+      "id": "condition_5",
+      "name": "Daily Volume > 5,000,000",
+      "enabled": false,
+      "operator": ">",
+      "min_volume": 5000000.0
+    }
+  }
+}
